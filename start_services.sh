@@ -4,7 +4,7 @@
 set -e
 
 # Start the FastAPI backend
-(cd backend && uvicorn app.main:app --reload) &
+(cd backend && uvicorn app.main:app --reload --port 8000) &
 BACK_PID=$!
 
 # Stop backend when this script exits

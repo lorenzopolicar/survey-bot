@@ -14,9 +14,17 @@ export default function Admin() {
   const [link, setLink] = useState<string | null>(null);
 
   const loadQuestions = async () => {
-    const resp = await fetch('/api/questions');
-    const data = await resp.json();
-    setQuestions(data);
+    try {
+      const resp = await fetch('/api/questions');
+      if (!resp.ok) {
+        throw new Error(`HTTP error! status: ${resp.status}`);
+      }
+      const data = await resp.json();
+      setQuestions(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error loading questions:', error);
+      setQuestions([]);
+    }
   };
 
   useEffect(() => {
