@@ -4,7 +4,8 @@ This repository contains a minimal proof of concept for an LLM powered survey bo
 
 The backend uses Langchain/LangGraph to orchestrate a conversational agent that guides participants through a survey. Responses are stored in a SQLite database and scored via the OpenAI API.
 
-The frontend contains a basic chat interface for survey participants and a small admin interface for creating questions.
+The frontend provides a modern interface built with React and Material UI. Participants chat with the bot through a clean conversation view while admins can add questions and generate share links via a management screen.
+
 
 ## Running the backend
 ```bash
@@ -21,4 +22,8 @@ npm install
 npm start
 ```
 
-This project is only a lightweight demo and not intended for production use.
+After adding questions via the `/admin` page you can generate a shareable survey
+link. Participants visiting `/?token=<id>` will see the chat-based survey and
+their answers will be stored under that ID.
+
+
