@@ -14,9 +14,13 @@ interface Message {
   text: string;
 }
 
-export default function ChatBot() {
+interface Props {
+  token?: string;
+}
+
+export default function ChatBot({ token: initialToken }: Props) {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [token, setToken] = useState<string>('');
+  const [token, setToken] = useState<string>(initialToken || '');
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [step, setStep] = useState(0);
@@ -27,15 +31,19 @@ export default function ChatBot() {
       const qResp = await fetch('/api/questions');
       const qs = await qResp.json();
       setQuestions(qs);
-      const lResp = await fetch('/api/links', { method: 'POST' });
-      const { token } = await lResp.json();
-      setToken(token);
+      let t = initialToken;
+      if (!t) {
+        const lResp = await fetch('/api/links', { method: 'POST' });
+        const data = await lResp.json();
+        t = data.token;
+      }
+      setToken(t);
       if (qs.length > 0) {
         setMessages([{ from: 'bot', text: qs[0].text }]);
       }
     };
     init();
-  }, []);
+  }, [initialToken]);
 
   const send = async () => {
     if (!input || done || step >= questions.length || !token) return;

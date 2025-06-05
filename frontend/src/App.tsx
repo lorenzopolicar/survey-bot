@@ -8,7 +8,7 @@ function ChatWrapper() {
   const [params] = useSearchParams();
   const token = params.get('token');
   // If link was shared, token param will exist; ChatBot handles creating a token otherwise
-  return <ChatBot />;
+  return <ChatBot token={token || undefined} />;
 }
 
 export default function App() {
