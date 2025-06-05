@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+openai
+langchain
+langgraph
+pytest
+pytest-asyncio

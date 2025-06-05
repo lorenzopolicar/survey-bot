@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+backend/.env
+backend/survey.db
+frontend/node_modules/
+frontend/dist/
