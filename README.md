@@ -7,6 +7,16 @@ The backend uses Langchain/LangGraph to orchestrate a conversational agent that 
 The frontend provides a modern interface built with React and Material UI. Participants chat with the bot through a clean conversation view while admins can add questions and generate share links via a management screen.
 
 
+## Starting both services
+
+You can run both the backend and frontend together using the included
+`start_services.sh` helper:
+
+```bash
+./start_services.sh
+```
+
+
 ## Running the backend
 ```bash
 cd backend
