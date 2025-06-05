@@ -6,3 +6,4 @@ openai
 langchain
 langgraph
 pytest
+pytest-asyncio
