@@ -9,6 +9,7 @@ interface Question {
   guideline?: string | null;
 }
 
+
 interface Message {
   from: 'user' | 'bot';
   text: string;
