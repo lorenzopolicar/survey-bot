@@ -213,7 +213,7 @@ stateDiagram-v2
 ## Demo Videos
 
 ### 1. Admin – Creating Questions & Links  
-![Admin creating questions and links](videos/question.mp4)
+![Admin creating questions and links](gifs/question.gif)
 
 **What you see**
 
@@ -226,7 +226,7 @@ stateDiagram-v2
 * On *Generate Link* → `POST /links` stores the token. No LangGraph yet; state is created lazily on `/start`.
 
 ### 2. Low-Quality Answer Flow  
-![Low quality answer flow](videos/lowqualityresponse.mp4)
+![Low quality answer flow](gifs/lowqualityresponse.gif)
 
 **Screen action**
 
@@ -242,7 +242,7 @@ stateDiagram-v2
 * On second user reply, `classify_response` upgrades to *high quality* → `record_answer` is called; DB row committed.
 
 ### 3. Clarifying Question Flow  
-![Clarifying question flow](videos/clarifications.mp4)
+![Clarifying question flow](gifs/clarifications.gif)
 
 **Screen action**
 
@@ -257,7 +257,7 @@ stateDiagram-v2
 * New answer classified "high quality"; `record_answer` writes to DB.
 
 ### 4. Skipping Flow  
-![Skipping flow](videos/Skipping.mp4)
+![Skipping flow](gifs/Skipping.gif)
 
 *Survey contains **only two questions** (`name`, `age`).*
 
