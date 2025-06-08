@@ -213,10 +213,7 @@ stateDiagram-v2
 ## Demo Videos
 
 ### 1. Admin – Creating Questions & Links  
-<video width="100%" controls>
-  <source src="videos/question.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Admin creating questions and links](videos/question.mp4)
 
 **What you see**
 
@@ -228,13 +225,8 @@ stateDiagram-v2
 * `POST /questions` inserts the row.  
 * On *Generate Link* → `POST /links` stores the token. No LangGraph yet; state is created lazily on `/start`.
 
----
-
 ### 2. Low-Quality Answer Flow  
-<video width="100%" controls>
-  <source src="videos/lowqualityresponse.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Low quality answer flow](videos/lowqualityresponse.mp4)
 
 **Screen action**
 
@@ -249,13 +241,8 @@ stateDiagram-v2
 * `ask_more_details` crafts a clarifying prompt; both messages remain in `current_messages`.  
 * On second user reply, `classify_response` upgrades to *high quality* → `record_answer` is called; DB row committed.
 
----
-
 ### 3. Clarifying Question Flow  
-<video width="100%" controls>
-  <source src="videos/clarifications.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Clarifying question flow](videos/clarifications.mp4)
 
 **Screen action**
 
@@ -269,13 +256,8 @@ stateDiagram-v2
 * Bot rephrases the original question including guidance (state/region only).  
 * New answer classified "high quality"; `record_answer` writes to DB.
 
----
-
 ### 4. Skipping Flow  
-<video width="100%" controls>
-  <source src="videos/Skipping.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Skipping flow](videos/Skipping.mp4)
 
 *Survey contains **only two questions** (`name`, `age`).*
 
