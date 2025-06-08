@@ -6,7 +6,7 @@ import './styles.css';
 interface Question {
   id: number;
   text: string;
-  guideline?: string | null;
+  guidelines?: string | null;
 }
 
 
@@ -26,6 +26,8 @@ export default function ChatBot({ token: initialToken }: Props) {
   const [input, setInput] = useState('');
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -42,34 +44,68 @@ export default function ChatBot({ token: initialToken }: Props) {
       if (qs.length > 0) {
         setMessages([{ from: 'bot', text: qs[0].text }]);
       }
+      // Add welcome message
+      setMessages([{ 
+        from: 'bot', 
+        text: 'Welcome to the survey! Click the Start button below to begin.' 
+      }]);
     };
     init();
   }, [initialToken]);
 
-  const send = async () => {
-    if (!input || done || step >= questions.length || !token) return;
+  const startSurvey = async () => {
+    if (!token) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/links/${token}/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      setMessages(prev => [...prev, { from: 'bot', text: data.response }]);
+      setIsStarted(true);
+    } catch (error) {
+      console.error('Error starting survey:', error);
+      setMessages(prev => [...prev, { 
+        from: 'bot', 
+        text: 'Sorry, there was an error starting the survey. Please try again.' 
+      }]);
+    }
+    setIsLoading(false);
+  };
+
+  const sendMessage = async () => {
+    if (!input || !token || !isStarted) return;
     const userMsg: Message = { from: 'user', text: input };
-    const q = questions[step];
     setMessages(prev => [...prev, userMsg]);
     setInput('');
-    await fetch(`/api/links/${token}/answers/${q.id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: input })
-    });
-    const nextStep = step + 1;
-    if (nextStep < questions.length) {
-      setMessages(prev => [...prev, { from: 'bot', text: questions[nextStep].text }]);
-      setStep(nextStep);
-    } else {
-      setMessages(prev => [...prev, { from: 'bot', text: 'Thank you for completing the survey!' }]);
-      setDone(true);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`/api/links/${token}/message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: input })
+      });
+      const data = await response.json();
+      setMessages(prev => [...prev, { from: 'bot', text: data.response }]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages(prev => [...prev, { 
+        from: 'bot', 
+        text: 'Sorry, there was an error processing your response. Please try again.' 
+      }]);
     }
+    setIsLoading(false);
   };
 
   const handleKey = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      send();
+    if (e.key === 'Enter' && !isLoading) {
+      if (!isStarted) {
+        startSurvey();
+      } else {
+        sendMessage();
+      }
     }
   };
 
@@ -84,20 +120,37 @@ export default function ChatBot({ token: initialToken }: Props) {
           <Typography key={i} className={`message ${m.from}`}>{m.text}</Typography>
         ))}
       </Paper>
-      {!done && (
-        <Box sx={{ display: 'flex', mt: 2 }}>
-          <TextField
+      <Box sx={{ display: 'flex', mt: 2 }}>
+        {!isStarted ? (
+          <Button 
+            variant="contained" 
+            onClick={startSurvey} 
+            disabled={isLoading}
             fullWidth
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={handleKey}
-            placeholder="Type your answer..."
-          />
-          <IconButton color="primary" onClick={send} aria-label="send">
-            <SendIcon />
-          </IconButton>
-        </Box>
-      )}
+          >
+            {isLoading ? 'Starting...' : 'Start Survey'}
+          </Button>
+        ) : (
+          <>
+            <TextField
+              fullWidth
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKey}
+              placeholder="Type your answer..."
+              disabled={isLoading}
+            />
+            <IconButton 
+              color="primary" 
+              onClick={sendMessage} 
+              disabled={isLoading}
+              aria-label="send"
+            >
+              <SendIcon />
+            </IconButton>
+          </>
+        )}
+      </Box>
       {done && (
         <Box sx={{ textAlign: 'center', mt: 2 }}>
           <Button variant="contained" onClick={() => window.location.reload()}>Start Again</Button>

@@ -4,7 +4,7 @@ from . import models, schemas
 import uuid
 
 def create_question(db: Session, question: schemas.QuestionCreate):
-    db_q = models.Question(text=question.text, guideline=question.guideline)
+    db_q = models.Question(text=question.text, guidelines=question.guidelines)
     db.add(db_q)
     db.commit()
     db.refresh(db_q)

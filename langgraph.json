@@ -1,0 +1,7 @@
+{
+  "dependencies": ["./backend"],
+  "graphs": {
+    "survey_agent": "./backend/app/survey_graph.py:survey_agent"
+  },
+  "env": "backend/.env"
+}

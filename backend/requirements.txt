@@ -7,3 +7,4 @@ langchain
 langgraph
 pytest
 pytest-asyncio
+python-dotenv

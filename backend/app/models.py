@@ -7,7 +7,7 @@ class Question(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     text = Column(String, nullable=False)
-    guideline = Column(String, nullable=True)
+    guidelines = Column(String, nullable=True)
     answers = relationship("Answer", back_populates="question")
 
 class SurveyLink(Base):

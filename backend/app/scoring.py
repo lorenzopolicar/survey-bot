@@ -2,7 +2,7 @@ from openai import OpenAI
 import os
 
 SYSTEM_PROMPT = (
-    "You are a grader. Score the user's answer from 1 to 5 based on the question and optional guideline."
+    "You are a grader. Score the user's answer from 1 to 5 based on the question and optional guidlines."
 )
 
 _client = None
@@ -17,10 +17,10 @@ def get_client() -> OpenAI:
     return _client
 
 
-def score_answer(question: str, answer: str, guideline: str | None = None) -> int:
+def score_answer(question: str, answer: str, guidlines: str | None = None) -> int:
     prompt = SYSTEM_PROMPT
-    if guideline:
-        prompt += f" Guideline: {guideline}"
+    if guidlines:
+        prompt += f" Guideline: {guidlines}"
     prompt += f" Question: {question} Answer: {answer}"
 
     client = get_client()
