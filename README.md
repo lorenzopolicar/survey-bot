@@ -14,8 +14,9 @@ The goal is to keep participants "on-rails" (one question at a time) **while sti
 5. [Agent Design (`survey_graph.py`)](#agent-design-survey_graphpy)  
 6. [Execution Flow ✦ When Endpoints Are Called](#execution-flow)  
 7. [Demo Videos](#demo-videos)  
-8. [Getting Started](#getting-started)  
-9. [Road-map & Extensions](#road-map--extensions)
+8. [Testing & Quality Assurance](#testing--quality-assurance)
+9. [Getting Started](#getting-started)  
+10. [Road-map & Extensions](#road-map--extensions)
 
 ---
 
@@ -277,34 +278,26 @@ stateDiagram-v2
 
 ## Testing & Quality Assurance
 
-> **Note:** The mechanisms below are **designed** but not yet fully implemented.
-> Because the application already logs every LLM call via LangSmith and stores
-> complete LangGraph transcripts, integrating these tests will be a seamless
-> drop-in once engineering time permits.
-
 ### 1 · LLM-as-a-Judge Evaluation  
 
 | Step | What We Plan to Do | Why It Matters |
 |------|-------------------|----------------|
-| **a. Transcript Collection** | After each survey run, pull the `messages` list from the LangGraph checkpoint—this includes every user & AI turn *plus* hidden reasoning. | Gives the evaluator perfect context—no “black-box” gaps. |
+| **a. Transcript Collection** | After each survey run, pull the `messages` list from the LangGraph checkpoint—this includes every user & AI turn *plus* hidden reasoning. | Gives the evaluator perfect context—no "black-box" gaps. |
 | **b. System Prompt** | Feed the transcript to a *separate* evaluation model (e.g. `gpt-4o` or Claude) with an explicit rubric: 1️⃣ **Guideline Adherence**, 2️⃣ **Completeness**, 3️⃣ **Conversation Flow**, 4️⃣ **Politeness & Safety**. | Makes scoring explicit and repeatable. |
 | **c. Structured Output** | Require the judge to reply as JSON: `{ "overall": int, "per_question": {id: score}, "notes": str }`. | Machine-readable → pluggable into dashboards. |
 | **d. Persistence** | Store the JSON in a `run_evaluations` table keyed by `link_id`. | Enables historical quality tracking and A/B testing. |
 
 Because all LangGraph checkpoints already capture `messages`, wiring up this judge is a matter of adding one post-run task and a table migration.
 
----
-
 ### 2 · Automated Cost & Latency Tracking  
 
 * Every LLM call is instantiated via `langchain-openai` wrappers tagged
   `["survey_bot"]`, so **LangSmith** already records **tokens, cost, and latency**.
+  ![LangSmith tracing dashboard](gifs/langsmith.gif)
 * A simple GitHub Action can replay a fixture survey against candidate models and
   surface **mean latency** and **cost per run**.  
-* Thresholds (e.g. “fail if cost > $0.02/run or latency > 2× baseline”) can be
+* Thresholds (e.g. "fail if cost > $0.02/run or latency > 2× baseline") can be
   enforced with one YAML job because the tracing data is already available.
-
----
 
 All deeper layers—regression suites, canary deployments, RLHF tuning—are **not yet built**, but the logging and observability groundwork means they can be layered on without refactoring core code or database schema.
 
